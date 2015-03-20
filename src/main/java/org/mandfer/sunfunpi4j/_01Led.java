@@ -41,9 +41,7 @@ public class _01Led {
     
     public static void main(String[] args) throws InterruptedException {
         _01Led _01led = new _01Led( GpioFactory.getInstance());
-        while(true){
-            _01led.run(1);
-        }
+        _01led.run(99); // Use Ctrl+C to stop this program.
     }
     
     public void run(int numLoops) throws InterruptedException{
