@@ -15,7 +15,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 
-public class _01LedTest {    
+public class Ex01BlinkLedTest {    
 
     /**
      * Blink the led without a physical led. 
@@ -45,7 +45,7 @@ public class _01LedTest {
             }
         }).when(mocked_led).high();
         
-        _01Led _01led = new _01Led(mocked_gpioController);
+        Ex01BlinkLed _01led = new Ex01BlinkLed(mocked_gpioController);
         _01led.run(testLoops);
         
         verify(mocked_gpioController).provisionDigitalOutputPin(any(Pin.class));

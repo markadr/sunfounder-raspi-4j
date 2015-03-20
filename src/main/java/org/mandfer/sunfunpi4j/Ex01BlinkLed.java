@@ -31,16 +31,16 @@ import com.pi4j.io.gpio.RaspiPin;
  * Blink led on GPIO 0
  *
  */
-public class _01Led {
+public class Ex01BlinkLed {
     
     private final GpioController gpio;
     
-    public _01Led(GpioController gpio){
+    public Ex01BlinkLed(GpioController gpio){
         this.gpio = gpio;
     }
     
     public static void main(String[] args) throws InterruptedException {
-        _01Led _01led = new _01Led( GpioFactory.getInstance());
+        Ex01BlinkLed _01led = new Ex01BlinkLed( GpioFactory.getInstance());
         _01led.run(99); // Use Ctrl+C to stop this program.
     }
     
@@ -48,7 +48,7 @@ public class _01Led {
         Pin pinNumber = RaspiPin.GPIO_00;
         
         GpioPinDigitalOutput led = gpio.provisionDigitalOutputPin(pinNumber);
-        System.out.println("linker LedPin : GPIO "+pinNumber+"(wiringPi pin)");
+        System.out.println("linker LedPin : "+pinNumber+"(wiringPi pin)");
         
         for(int i=0; i< numLoops ; i++){
             led.low();
