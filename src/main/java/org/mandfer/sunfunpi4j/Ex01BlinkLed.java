@@ -26,36 +26,41 @@ import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
+import java.io.Console;
+import java.util.Scanner;
 
 /**
  * Blink led on GPIO 0
  *
  */
-public class Ex01BlinkLed {
+public class Ex01BlinkLed extends BaseSketch {    
     
-    private final GpioController gpio;
+    private final Pin pinNumber = RaspiPin.GPIO_00;
+    private GpioPinDigitalOutput led;
     
     public Ex01BlinkLed(GpioController gpio){
-        this.gpio = gpio;
+        super(gpio);
     }
     
     public static void main(String[] args) throws InterruptedException {
         Ex01BlinkLed _01led = new Ex01BlinkLed( GpioFactory.getInstance());
-        _01led.run(99); // Use Ctrl+C to stop this program.
-    }
+        _01led.run(); // Use Ctrl+C to stop this program.
+    }    
     
-    public void run(int numLoops) throws InterruptedException{
-        Pin pinNumber = RaspiPin.GPIO_00;
-        
-        GpioPinDigitalOutput led = gpio.provisionDigitalOutputPin(pinNumber);
+    @Override
+    protected void setup() {
+        led = gpio.provisionDigitalOutputPin(pinNumber);
         System.out.println("linker LedPin : "+pinNumber+"(wiringPi pin)");
-        
-        for(int i=0; i< numLoops ; i++){
+    }
+
+    @Override
+    protected void loop() throws InterruptedException{
+        do{
             led.low();
             Thread.sleep(500);
             led.high();
             Thread.sleep(500);            
-        }
-        
+        }while(isNotInterrupted);
     }
+
 }

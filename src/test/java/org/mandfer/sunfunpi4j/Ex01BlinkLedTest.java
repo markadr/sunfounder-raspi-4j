@@ -46,11 +46,13 @@ public class Ex01BlinkLedTest {
         }).when(mocked_led).high();
         
         Ex01BlinkLed _01led = new Ex01BlinkLed(mocked_gpioController);
-        _01led.run(testLoops);
+        _01led.setup();
+        _01led.interruptSketch();
+        _01led.loop();
         
         verify(mocked_gpioController).provisionDigitalOutputPin(any(Pin.class));
-        verify(mocked_led, Mockito.atLeast(3) ).low();
-        verify(mocked_led, Mockito.atLeast(3) ).high();        
+        verify(mocked_led, Mockito.atLeast(1) ).low();
+        verify(mocked_led, Mockito.atLeast(1) ).high();        
          
     }
 }
