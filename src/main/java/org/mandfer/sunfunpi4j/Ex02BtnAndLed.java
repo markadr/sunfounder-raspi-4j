@@ -21,44 +21,41 @@
 
 package org.mandfer.sunfunpi4j;
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.io.gpio.*;
 
 /**
- * Blink led on GPIO 0
- *
+ * Turn on the led when the button is pushed.
+ * 
  * @author marcandreuf
  */
-public class Ex01BlinkLed extends BaseSketch {    
+public class Ex02BtnAndLed extends BaseSketch {
 
     private GpioPinDigitalOutput led;
-    
-    public Ex01BlinkLed(GpioController gpio){
+    private GpioPinDigitalInput button;
+
+
+    public Ex02BtnAndLed(GpioController gpio){
         super(gpio);
     }
-    
+
     public static void main(String[] args) throws InterruptedException {
-        Ex01BlinkLed _01led = new Ex01BlinkLed( GpioFactory.getInstance());
-        _01led.run();
-    }    
-    
-    @Override
-    protected void setup() {
-        Pin pinNumber = RaspiPin.GPIO_00;
-        led = gpio.provisionDigitalOutputPin(pinNumber);
-        System.out.println("linker LedPin : "+pinNumber+"(wiringPi pin)");
+        Ex02BtnAndLed ex2BtnLed = new Ex02BtnAndLed( GpioFactory.getInstance());
+        ex2BtnLed.run();
     }
 
     @Override
-    protected void loop() {
+    protected void setup() {
+        led = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00);
+        button = gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, PinPullResistance.PULL_UP);
+       }
+
+    @Override
+    protected void loop(){
         do{
-            led.low();
-            delay(500);
             led.high();
-            delay(500);
+            if(button.isLow()){
+                led.low();
+            }
         }while(isNotInterrupted);
     }
 

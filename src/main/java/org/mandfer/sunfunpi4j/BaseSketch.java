@@ -1,22 +1,42 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Marc Andreu
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+ * Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
  */
+
 package org.mandfer.sunfunpi4j;
 
 import com.pi4j.io.gpio.GpioController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Scanner;
 
 /**
- *
+ * Super class with sketch abstraction methods.
+ * 
  * @author marcandreuf
  */
 public abstract class BaseSketch {
 
     protected final GpioController gpio;
     protected static Thread threadCheckInputStream;
-    //protected Logger logger = LoggerFactory.getLogger(BaseSketch.class.getName());
+    protected Logger logger = LoggerFactory.getLogger(BaseSketch.class.getName());
     protected boolean isNotInterrupted = true;
 
     protected abstract void setup();
@@ -41,8 +61,7 @@ public abstract class BaseSketch {
     }
 
     protected void tearDown() {
-        //logger.debug
-        System.out.println("Shutting down gpio.");
+        logger.debug("Shutting down gpio.");
         gpio.shutdown();
     }
 
@@ -50,12 +69,11 @@ public abstract class BaseSketch {
         try {
             Thread.sleep(miliseconds);
         } catch (InterruptedException ex) {
-            //logger.error
-            System.out.println("Sleep delay interrupted " + ex.getMessage());
+            logger.error("Sleep delay interrupted " + ex.getMessage());
         }
     }
 
-    protected void interruptSketch() {
+    protected void setSketchInterruption() {
         if (threadCheckInputStream != null && threadCheckInputStream.isAlive()) {
             threadCheckInputStream.interrupt();
         }
@@ -67,10 +85,8 @@ public abstract class BaseSketch {
         Scanner scanner = new Scanner(System.in);
 
         public void run() {
-            while (!scanner.hasNextLine()) {
-            };
-            //logger.debug
-            System.out.println("Scketch interrupted.");
+            while (!scanner.hasNextLine()) {};
+            logger.debug("Sketch interrupted.");
             scanner.close();
             isNotInterrupted = false;
         }
