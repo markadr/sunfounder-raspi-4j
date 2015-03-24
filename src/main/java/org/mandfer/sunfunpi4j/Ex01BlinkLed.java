@@ -49,7 +49,7 @@ public class Ex01BlinkLed extends BaseSketch {
     protected void setup() {
         Pin pinNumber = RaspiPin.GPIO_00;
         led = gpio.provisionDigitalOutputPin(pinNumber);
-        System.out.println("linker LedPin : "+pinNumber+"(wiringPi pin)");
+        logger.debug("linker LedPin : "+pinNumber+"(wiringPi pin)");
     }
 
     @Override

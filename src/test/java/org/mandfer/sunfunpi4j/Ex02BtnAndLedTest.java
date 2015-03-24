@@ -21,7 +21,6 @@
 
 package org.mandfer.sunfunpi4j;
 
-import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinPullResistance;
@@ -29,51 +28,34 @@ import com.pi4j.io.gpio.RaspiPin;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 
-public class Ex02BtnAndLedTest {
-
-    private GpioController mocked_gpioController = mock(GpioController.class);
-    private GpioPinDigitalOutput mocked_led = mock(GpioPinDigitalOutput.class);
-    private GpioPinDigitalInput mocked_button = mock(GpioPinDigitalInput.class);
+public class Ex02BtnAndLedTest extends BaseSketchTest {
+    private GpioPinDigitalOutput mocked_led;
+    private GpioPinDigitalInput mocked_button;
+    private Ex02BtnAndLed sketch;
 
     @Before
     public void setUp(){
-        mocked_gpioController = mock(GpioController.class);
         mocked_led = mock(GpioPinDigitalOutput.class);
         mocked_button = mock(GpioPinDigitalInput.class);
 
+        sketch = new Ex02BtnAndLed(mocked_gpioController);
+        
         when(mocked_gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00))
                 .thenReturn(mocked_led);
         when(mocked_gpioController.provisionDigitalInputPin(RaspiPin.GPIO_01, PinPullResistance.PULL_UP))
                 .thenReturn(mocked_button);
-
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocation) {
-                System.out.println("Gpio is low.");
-                return null;
-            }
-        }).when(mocked_led).low();
-
-        doAnswer(new Answer() {
-            public Object answer(InvocationOnMock invocation) {
-                System.out.println("Gpio is high.");
-                return null;
-            }
-        }).when(mocked_led).high();
+        mockLedBehaviour(0, mocked_led);
     }
 
     @Test
     public void testLedKeepsHighIfButtonIsNotPressed(){
         when(mocked_button.isLow()).thenReturn(false);
         
-        Ex02BtnAndLed sketch = new Ex02BtnAndLed(mocked_gpioController);
         sketch.setup();
         sketch.setSketchInterruption();
         sketch.loop();
@@ -86,7 +68,6 @@ public class Ex02BtnAndLedTest {
     public void testLedGetsLowIfButtonIsPressed(){
         when(mocked_button.isLow()).thenReturn(true);
 
-        Ex02BtnAndLed sketch = new Ex02BtnAndLed(mocked_gpioController);
         sketch.setup();
         sketch.setSketchInterruption();
         sketch.loop();

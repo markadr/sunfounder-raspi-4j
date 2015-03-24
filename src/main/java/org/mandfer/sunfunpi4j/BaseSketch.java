@@ -34,9 +34,9 @@ import java.util.Scanner;
  */
 public abstract class BaseSketch {
 
+    protected final Logger logger = LoggerFactory.getLogger(BaseSketch.class.getName());
     protected final GpioController gpio;
     protected static Thread threadCheckInputStream;
-    protected Logger logger = LoggerFactory.getLogger(BaseSketch.class.getName());
     protected boolean isNotInterrupted = true;
 
     protected abstract void setup();
