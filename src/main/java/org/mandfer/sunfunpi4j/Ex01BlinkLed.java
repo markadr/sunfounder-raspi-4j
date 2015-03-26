@@ -42,7 +42,7 @@ public class Ex01BlinkLed extends BaseSketch {
     
     public static void main(String[] args) throws InterruptedException {
         Ex01BlinkLed _01led = new Ex01BlinkLed( GpioFactory.getInstance());
-        _01led.run();
+        _01led.run(args);
     }    
     
     @Override
@@ -53,7 +53,7 @@ public class Ex01BlinkLed extends BaseSketch {
     }
 
     @Override
-    protected void loop() {
+    protected void loop(String[] args) {
         do{
             led.low();
             delay(500);

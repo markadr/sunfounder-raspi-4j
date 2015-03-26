@@ -27,58 +27,50 @@ package org.mandfer.sunfunpi4j;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import java.util.List;
+import com.pi4j.io.gpio.GpioPinPwmOutput;
+import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.wiringpi.Gpio;
+import com.pi4j.wiringpi.SoftPwm;
 
 /**
  *
  * @author marcandreuf
  */
-public class Ex03_8Led extends BaseSketch {
-    public static final int NUMOFLEDS = 8;
+public class Ex05_PwmLed extends BaseSketch {
 
-    private List<GpioPinDigitalOutput> leds;
+    private GpioPinPwmOutput dimableLed;
+    private int nonPwmPin = 2;
     
-    public Ex03_8Led(GpioController gpio) {
+    public Ex05_PwmLed(GpioController gpio) {
         super(gpio);
     }
-    
+        
     public static void main(String[] args) throws InterruptedException {
-        Ex03_8Led ex38leds = new Ex03_8Led( GpioFactory.getInstance());
-        ex38leds.run(args);
+        Ex05_PwmLed ex05Pwmled = new Ex05_PwmLed( GpioFactory.getInstance());
+        ex05Pwmled.run(args);
     }
 
     @Override
     protected void setup() {
-        try {
-            leds = createListOfPinOutputs(NUMOFLEDS);
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
-        }
+        //Gpio.wiringPiSetup(); Uncommend for SoftPwm
+        //SoftPwm.softPwmCreate(nonPwmPin, 0, 1024);
+        dimableLed = gpio.provisionPwmOutputPin(RaspiPin.GPIO_01);
     }
 
     @Override
     protected void loop(String[] args) throws InterruptedException {        
         do{
-            ledOnFromLeftToRight();
-            delay(500);
-            ledOffFromRightToLeft();
+            for(int intensity=0;intensity<1024; intensity++){
+                //SoftPwm.softPwmWrite(nonPwmPin, intensity);
+                dimableLed.setPwm(intensity);
+                delay(2);
+            }
+            delay(1000);
+            for(int intensity=1023;intensity>=0;intensity--){
+                //SoftPwm.softPwmWrite(nonPwmPin, intensity);
+                dimableLed.setPwm(intensity);
+                delay(2);
+            }            
         }while(isNotInterrupted);
-    }
-
-    private void ledOffFromRightToLeft() {
-        for(int i=NUMOFLEDS-1;i>=0;i--){
-            leds.get(i).low();
-            delay(100);
-            leds.get(i).high();
-        }
-    }
-    
-    private void ledOnFromLeftToRight() {
-        for(GpioPinDigitalOutput led : leds){
-            led.low();
-            delay(100);
-            led.high();
-        }
     }    
 }

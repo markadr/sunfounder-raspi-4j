@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 public class Ex01BlinkLedTest extends BaseSketchTest{
     
     @Test
-    public void testBlinkingLed() {
+    public void testBlinkingLed() throws InterruptedException {
         GpioPinDigitalOutput mocked_led = mock(GpioPinDigitalOutput.class);
         
         when(mocked_gpioController.provisionDigitalOutputPin(any(Pin.class)))

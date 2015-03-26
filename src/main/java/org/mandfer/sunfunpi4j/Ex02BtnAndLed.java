@@ -40,7 +40,7 @@ public class Ex02BtnAndLed extends BaseSketch {
 
     public static void main(String[] args) throws InterruptedException {
         Ex02BtnAndLed ex2BtnLed = new Ex02BtnAndLed( GpioFactory.getInstance());
-        ex2BtnLed.run();
+        ex2BtnLed.run(args);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class Ex02BtnAndLed extends BaseSketch {
        }
 
     @Override
-    protected void loop(){
+    protected void loop(String[] args){
         do{
             led.high();
             if(button.isLow()){

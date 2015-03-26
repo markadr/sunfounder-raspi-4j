@@ -22,6 +22,11 @@
 package org.mandfer.sunfunpi4j;
 
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.RaspiPin;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,17 +45,20 @@ public abstract class BaseSketch {
     protected boolean isNotInterrupted = true;
 
     protected abstract void setup();
-
-    protected abstract void loop() throws InterruptedException;
+    protected abstract void loop(String[] args) throws InterruptedException;   
+    
+    protected void loop() throws InterruptedException{
+        loop(new String[0]);
+    }
 
     public BaseSketch(GpioController gpio) {
         this.gpio = gpio;
     }
 
-    protected void run() throws InterruptedException {
+    protected void run(String[] args) throws InterruptedException {
         setup();
         startThreadToCheckInputStream();
-        loop();
+        loop(args);
         tearDown();
     }
 
@@ -90,6 +98,19 @@ public abstract class BaseSketch {
             scanner.close();
             isNotInterrupted = false;
         }
+    }
+    
+    public List<GpioPinDigitalOutput> createListOfPinOutputs(int numOfPins) throws Exception {
+        Pin pin;
+        List<GpioPinDigitalOutput> list = new ArrayList<>();
+        if(numOfPins<1) throw new NumberFormatException("The num of leds can not be negative.");
+        if(numOfPins>20) throw new NumberFormatException("The maximum number of GPIOs is 20.");
+        for (int i = 0; i < numOfPins; i++) {
+            pin = RaspiPin.getPinByName("GPIO "+i);
+            list.add(gpio.provisionDigitalOutputPin(pin));
+            logger.debug("linker LedPin : GPIO "+pin.getAddress()+"(wiringPi pin)");            
+        }
+        return list;
     }
 
 }

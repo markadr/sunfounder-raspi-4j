@@ -28,24 +28,25 @@ package org.mandfer.sunfunpi4j;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.PinState;
 import java.util.List;
 
 /**
  *
  * @author marcandreuf
  */
-public class Ex03_8Led extends BaseSketch {
+public class Ex04_CmdLed extends BaseSketch {
     public static final int NUMOFLEDS = 8;
 
     private List<GpioPinDigitalOutput> leds;
     
-    public Ex03_8Led(GpioController gpio) {
+    public Ex04_CmdLed(GpioController gpio) {
         super(gpio);
     }
-    
+        
     public static void main(String[] args) throws InterruptedException {
-        Ex03_8Led ex38leds = new Ex03_8Led( GpioFactory.getInstance());
-        ex38leds.run(args);
+        Ex04_CmdLed ex04CmdLed = new Ex04_CmdLed( GpioFactory.getInstance());
+        ex04CmdLed.run(args);
     }
 
     @Override
@@ -59,26 +60,22 @@ public class Ex03_8Led extends BaseSketch {
 
     @Override
     protected void loop(String[] args) throws InterruptedException {        
-        do{
-            ledOnFromLeftToRight();
-            delay(500);
-            ledOffFromRightToLeft();
-        }while(isNotInterrupted);
-    }
-
-    private void ledOffFromRightToLeft() {
-        for(int i=NUMOFLEDS-1;i>=0;i--){
-            leds.get(i).low();
-            delay(100);
-            leds.get(i).high();
-        }
-    }
-    
-    private void ledOnFromLeftToRight() {
-        for(GpioPinDigitalOutput led : leds){
-            led.low();
-            delay(100);
-            led.high();
-        }
+        int pinNum;
+        int pinStatus;
+        if (args.length > 0) {
+            try {
+                pinNum = Integer.parseInt(args[0]);
+                pinStatus = Integer.parseInt(args[1]);
+                leds.get(pinNum).setState(PinState.getState(pinStatus));
+                logger.debug("Press enter to stop.");
+                do{}while(isNotInterrupted);
+            } catch (NumberFormatException e) {
+                logger.error("Arguments 1 is the led number, "
+                  + "agrument is 0 for low and 1 for high.");
+            }
+        }else{
+            logger.debug("There are no arguments! Remember to add double"
+              + " quotes around the class name and arguments.");
+        }        
     }    
 }

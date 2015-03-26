@@ -53,7 +53,7 @@ public class Ex02BtnAndLedTest extends BaseSketchTest {
     }
 
     @Test
-    public void testLedKeepsHighIfButtonIsNotPressed(){
+    public void testLedKeepsHighIfButtonIsNotPressed() throws InterruptedException{
         when(mocked_button.isLow()).thenReturn(false);
         
         sketch.setup();
@@ -65,7 +65,7 @@ public class Ex02BtnAndLedTest extends BaseSketchTest {
     }
 
     @Test
-    public void testLedGetsLowIfButtonIsPressed(){
+    public void testLedGetsLowIfButtonIsPressed() throws InterruptedException{
         when(mocked_button.isLow()).thenReturn(true);
 
         sketch.setup();

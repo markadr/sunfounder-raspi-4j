@@ -9,9 +9,44 @@
 
     <name>sunfunpi4j</name>
     <url>http://maven.apache.org</url>
+    
+    <!-- //TODO: Add plugin deploy from pi4j main pom -->
 
+    <!-- BUILD PROPERTIES -->
     <properties>
+        <!-- DEFAULT RASPBERRY PI PROPERTIES -->
+        <pi.host>192.168.0.11</pi.host>
+        <pi.port>22</pi.port>
+        <pi.user>pi</pi.user>
+        <pi.password>thepassissecret</pi.password>        
+        
+        <!-- SETTINGS FOR REMOTELY BUILDING NATIVE LIBRARY ON RASPBERRY PI -->
+        <pi.dirBuildTemp>/home/pi/pi4j-temp</pi.dirBuildTemp>
+
+        <!-- SETTINGS FOR COPYING Pi4J ARTIFACTS TO DEVELOPMENT RASPBERRY PI -->
+        <pi.transfer.dev>false</pi.transfer.dev>
+        <pi.host.dev>${pi.host}</pi.host.dev>
+        <pi.port.dev>${pi.port}</pi.port.dev>
+        <pi.user.dev>${pi.user}</pi.user.dev>
+        <pi.password.dev>${pi.password}</pi.password.dev>
+        <pi.dirCopyTo.dev>/home/pi/sunfounder-raspi-4j/target</pi.dirCopyTo.dev>
+        
+        <!-- DEPENDENCY VERSIONS -->
+        <ant-jsch.version>1.7.1</ant-jsch.version>
+        <jsch.version>0.1.51</jsch.version>
+        <ant-contrib.version>20020829</ant-contrib.version>
+
+        <!-- PROJECT ENCODING PROPERTIES -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        
+        <!-- JAVA COMPILER VERSIONS -->
+        <jdk.source.version>1.7</jdk.source.version>
+        <jdk.target.version>1.7</jdk.target.version>
+        
+        <!-- PLUGIN VERSIONS -->
+        <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+        <maven-source-plugin.version>2.3</maven-source-plugin.version>
     </properties>
 
     <repositories>
@@ -32,7 +67,7 @@
         <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-core</artifactId>
-            <version>0.0.5</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <!-- Logging tools -->
@@ -92,15 +127,75 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- JAVA COMPILER -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>${jdk.source.version}</source>
+                    <target>${jdk.target.version}</target>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                    <verbose>true</verbose>
                 </configuration>
             </plugin>
+            
+            <!-- OPTIONALLY DEPLOY THE FINAL JAR TO THE RASPBERRY PI -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+
+                    <!-- copy the compiled JAR file to the Raspberry Pi platform platform -->
+                    <execution>
+                        <id>transfer-compiled-pi4j-example-jar</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <taskdef resource="net/sf/antcontrib/antcontrib.properties"
+                                         classpathref="maven.plugin.classpath" />
+                                <if>
+                                    <equals arg1="${pi.transfer.dev}" arg2="true" />
+                                    <then>
+
+                                        <!-- ensure the target directory exists on the Raspberry Pi -->
+                                        <sshexec host="${pi.host.dev}" port="${pi.port.dev}" username="${pi.user.dev}"
+                                                 password="${pi.password.dev}" trust="true" failonerror="false"
+                                                 verbose="true" command="mkdir --parents ${pi.dirCopyTo.dev}" />
+
+                                        <!-- copy the JAR file to the Raspberry Pi -->
+                                        <scp
+                                            file="${project.build.directory}/${project.build.finalName}-all.jar"
+                                            todir="${pi.user.dev}:${pi.password.dev}@${pi.host.dev}:${pi.dirCopyTo.dev}"
+                                            port="${pi.port.dev}" trust="true" verbose="true" failonerror="true">
+                                        </scp>
+                                    </then>
+                                </if>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>${ant-jsch.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>${jsch.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                        <version>${ant-contrib.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>        
         </plugins>
     </build>
 

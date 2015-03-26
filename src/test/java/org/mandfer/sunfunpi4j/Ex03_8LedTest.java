@@ -26,11 +26,8 @@
 package org.mandfer.sunfunpi4j;
 
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
-import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,48 +35,23 @@ import org.junit.rules.ExpectedException;
 import static org.mandfer.sunfunpi4j.Ex03_8Led.NUMOFLEDS;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  *
  * @author marcandreuf
  */
-public class EX03_8LedTest extends BaseSketchTest {
-    private List<GpioPinDigitalOutput> mocked_ledstrip;
+public class Ex03_8LedTest extends BaseSketchTest {
+    private List<GpioPinDigitalOutput> mocked_gpioPinDigOutputs;
     private Ex03_8Led sketch;
     
     
     @Before
     public void setUp(){
         sketch = new Ex03_8Led(mocked_gpioController);
-        
-        mocked_ledstrip = new ArrayList<>();
-        GpioPinDigitalOutput mocked_led;
-        for(int i=0;i<NUMOFLEDS;i++){
-            mocked_led = mock(GpioPinDigitalOutput.class);
-            mockLedBehaviour(i, mocked_led);
-            mocked_ledstrip.add(mocked_led);
-            
-            try {
-                when(mocked_gpioController.provisionDigitalOutputPin(sketch.getPinByNumber(i)))
-                  .thenReturn(mocked_led);
-            } catch (Exception ex) {
-                logger.error(ex.getMessage(), ex);
-            }
-        }
-    }
-    
-    @Test
-    public void getPinObjectGivenPinNumber() throws Exception{
-        Pin pin;
-        for(int i=0;i<3;i++){
-            pin = sketch.getPinByNumber(i);
-            assertTrue(pin.getAddress() == i);
-        }
-    }
-    
+        mocked_gpioPinDigOutputs = setUpLedStrip();
+    }    
+
     
     @Test
     public void createListOfNPinOutputMode() throws Exception{
@@ -125,7 +97,7 @@ public class EX03_8LedTest extends BaseSketchTest {
         sketch.loop();
         
         InOrder inOrder;        
-        for(GpioPinDigitalOutput led : mocked_ledstrip){
+        for(GpioPinDigitalOutput led : mocked_gpioPinDigOutputs){
             inOrder = Mockito.inOrder(led);            
             inOrder.verify(led).low();
             inOrder.verify(led).high();

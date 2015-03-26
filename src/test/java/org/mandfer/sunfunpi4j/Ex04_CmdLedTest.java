@@ -25,60 +25,41 @@
  */
 package org.mandfer.sunfunpi4j;
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.PinState;
 import java.util.List;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.verify;
 
 /**
  *
  * @author marcandreuf
  */
-public class Ex03_8Led extends BaseSketch {
-    public static final int NUMOFLEDS = 8;
-
-    private List<GpioPinDigitalOutput> leds;
+public class Ex04_CmdLedTest extends BaseSketchTest {
+    private List<GpioPinDigitalOutput> mocked_gpioPinDigOutputs;
+    private Ex04_CmdLed sketch;
     
-    public Ex03_8Led(GpioController gpio) {
-        super(gpio);
-    }
     
-    public static void main(String[] args) throws InterruptedException {
-        Ex03_8Led ex38leds = new Ex03_8Led( GpioFactory.getInstance());
-        ex38leds.run(args);
-    }
-
-    @Override
-    protected void setup() {
-        try {
-            leds = createListOfPinOutputs(NUMOFLEDS);
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
-        }
-    }
-
-    @Override
-    protected void loop(String[] args) throws InterruptedException {        
-        do{
-            ledOnFromLeftToRight();
-            delay(500);
-            ledOffFromRightToLeft();
-        }while(isNotInterrupted);
-    }
-
-    private void ledOffFromRightToLeft() {
-        for(int i=NUMOFLEDS-1;i>=0;i--){
-            leds.get(i).low();
-            delay(100);
-            leds.get(i).high();
-        }
+    @Before
+    public void setUp(){        
+        sketch = new Ex04_CmdLed(mocked_gpioController);
+        mocked_gpioPinDigOutputs = setUpLedStrip();             
     }
     
-    private void ledOnFromLeftToRight() {
-        for(GpioPinDigitalOutput led : leds){
-            led.low();
-            delay(100);
-            led.high();
-        }
-    }    
+    @Test
+    @Ignore
+    public void testPinAtGivenNumberIsAtGivenState() throws InterruptedException{
+        String[] sample_arguments = {"2","0"};
+        
+        sketch.setup();
+        sketch.setSketchInterruption();
+        sketch.loop(sample_arguments);
+        
+        verify(mocked_gpioPinDigOutputs.get(0), Mockito.never()).low();
+        verify(mocked_gpioPinDigOutputs.get(1), Mockito.never()).low();
+        verify(mocked_gpioPinDigOutputs.get(2)).setState(PinState.getState(0));        
+    }
 }
