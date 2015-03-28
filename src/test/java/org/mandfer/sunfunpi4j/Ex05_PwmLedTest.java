@@ -27,7 +27,6 @@ package org.mandfer.sunfunpi4j;
 
 import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.RaspiPin;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -46,8 +45,7 @@ import org.mockito.stubbing.Answer;
  */
 public class Ex05_PwmLedTest extends BaseSketchTest {
     private GpioPinPwmOutput mocked_dimableLed;
-    private Ex05_PwmLed sketch;
-    
+    private Ex05_PwmLed sketch;    
     
     @Before
     public void setUp(){        

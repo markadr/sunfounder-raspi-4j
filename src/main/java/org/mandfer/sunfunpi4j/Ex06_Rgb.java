@@ -27,43 +27,73 @@ package org.mandfer.sunfunpi4j;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinPwmOutput;
-import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.wiringpi.Gpio;
+import com.pi4j.wiringpi.SoftPwm;
+import java.awt.Color;
+
 
 /**
  *
  * @author marcandreuf
  */
-public class Ex05_PwmLed extends BaseSketch {
-
-    private GpioPinPwmOutput dimableLed;
+public class Ex06_Rgb extends BaseSketch {
     
-    public Ex05_PwmLed(GpioController gpio) {
+    public static final int LEDPINRED = 0;
+    public static final int LEDPINGREEN = 1;
+    public static final int LEDPINBLUE = 2;
+    
+    public Ex06_Rgb(GpioController gpio) {
         super(gpio);
     }
         
     public static void main(String[] args) throws InterruptedException {
-        Ex05_PwmLed ex05Pwmled = new Ex05_PwmLed( GpioFactory.getInstance());
+        Ex06_Rgb ex05Pwmled = new Ex06_Rgb( GpioFactory.getInstance());
         ex05Pwmled.run(args);
     }
 
     @Override
     protected void setup() {
-        dimableLed = gpio.provisionPwmOutputPin(RaspiPin.GPIO_01);
+        Gpio.wiringPiSetup();
+        ledInit();
     }
 
+    private void ledInit() {
+        SoftPwm.softPwmCreate(LEDPINRED, 0, 100);
+        SoftPwm.softPwmCreate(LEDPINGREEN, 0, 100);
+        SoftPwm.softPwmCreate(LEDPINBLUE, 0, 100);
+    }    
+    
     @Override
     protected void loop(String[] args) throws InterruptedException {        
         do{
-            for(int intensity=0;intensity<1024; intensity++){
-                dimableLed.setPwm(intensity);
-                delay(2);
-            }
-            delay(1000);
-            for(int intensity=1023;intensity>=0;intensity--){
-                dimableLed.setPwm(intensity);
-                delay(2);
-            }            
+             ledColorSet(Color.RED);
+             delay(500);
+             ledColorSet(Color.GREEN);
+             delay(500);
+             ledColorSet(Color.BLUE);
+             delay(500);
+             ledColorSet(Color.YELLOW);
+             delay(500);
+             ledColorSet(Color.PINK);
+             delay(500);
+             
+             ledColorSet(0x94, 0x00, 0xd3);
+             delay(500);
+             ledColorSet(0x76, 0xee, 0x00);
+             delay(500);
+             ledColorSet(0x00, 0xc5, 0xcd);
+             delay(500);         
         }while(isNotInterrupted);
     }    
+
+    protected void ledColorSet(Color color) {
+        ledColorSet(color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    void ledColorSet(int redValue, int greenValue, int blueValue) {
+        SoftPwm.softPwmWrite(LEDPINRED, redValue);
+        SoftPwm.softPwmWrite(LEDPINGREEN, greenValue);
+        SoftPwm.softPwmWrite(LEDPINBLUE, blueValue);
+    }
+
 }
