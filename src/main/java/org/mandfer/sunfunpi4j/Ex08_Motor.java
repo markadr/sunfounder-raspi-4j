@@ -40,9 +40,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class Ex08_Motor extends BaseSketch {
     
-    public static final int DURATION_TURNING_CLOCKWISE = 3000;
-    public static final int DURATION_STOPED = 2000;
-    public static final int DURATION_TURNING_ANITCLOCKWISE = 6000;
+    public static final int DURATION_TURNING_CLOCKWISE = 3;
+    public static final int DURATION_STOPED = 2;
+    public static final int DURATION_TURNING_ANITCLOCKWISE = 6;
     
     private final TimeUnit timer;   
     private GpioPinDigitalOutput motorPin1;
@@ -70,17 +70,35 @@ public class Ex08_Motor extends BaseSketch {
     @Override
     protected void loop(String[] args) throws InterruptedException {        
         do{
-            motorEnable.high();
-            motorPin1.high();
-            motorPin2.low();
-            timer.sleep(DURATION_TURNING_CLOCKWISE);
-            motorEnable.low();
-            timer.sleep(DURATION_STOPED);
-            motorEnable.high();
-            motorPin1.low();
-            motorPin2.high();
-            timer.sleep(DURATION_TURNING_ANITCLOCKWISE);
+            turnClockWise(DURATION_TURNING_CLOCKWISE);
+            stopMotor(DURATION_STOPED);
+            turnAntiClockWise(DURATION_TURNING_ANITCLOCKWISE);
+            stopMotor(DURATION_STOPED);
         }while(isNotInterrupted);
+        
+        motorEnable.low();
+    }
+    
+    private void turnClockWise(int timeUnits) throws InterruptedException{
+        logger.debug("Turn clockwise for "+timeUnits+" seconds.");
+        motorEnable.high();
+        motorPin1.high();
+        motorPin2.low();
+        timer.sleep(timeUnits);
+    }
+    
+    private void stopMotor(int timeUnits) throws InterruptedException{
+        logger.debug("Stop motor for "+timeUnits+" seconds.");
+        motorEnable.low();            
+        timer.sleep(timeUnits);
+    }
+    
+    private void turnAntiClockWise(int timeUnits) throws InterruptedException{
+        logger.debug("Turn anticlockwise for "+timeUnits+" seconds.");
+        motorEnable.high();
+        motorPin1.low();
+        motorPin2.high();            
+        timer.sleep(timeUnits);
     }
         
 }

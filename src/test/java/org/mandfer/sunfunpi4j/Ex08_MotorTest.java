@@ -97,6 +97,10 @@ public class Ex08_MotorTest extends BaseSketchTest {
         inOrder.verify(mocked_motorPin2).high();
         inOrder.verify(mocked_timer).sleep(DURATION_TURNING_ANITCLOCKWISE);
         
+        inOrder.verify(mocked_motorEnable).low();
+        inOrder.verify(mocked_timer).sleep(DURATION_STOPED);  
+        
+        inOrder.verify(mocked_motorEnable).low();
     }
     
 }
