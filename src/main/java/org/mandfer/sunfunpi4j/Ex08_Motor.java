@@ -29,37 +29,57 @@ import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.RaspiPin;
+import java.util.concurrent.TimeUnit;
 
 
 /**
+ * This class has an extra TimeUnit dependency which allows us to test the duration 
+ * when the motor is on.
  *
  * @author marcandreuf
  */
-public class Ex07_Beep extends BaseSketch {
-       
-    private GpioPinDigitalOutput beepPin;
+public class Ex08_Motor extends BaseSketch {
     
-    public Ex07_Beep(GpioController gpio) {
+    public static final int DURATION_TURNING_CLOCKWISE = 3000;
+    public static final int DURATION_STOPED = 2000;
+    public static final int DURATION_TURNING_ANITCLOCKWISE = 6000;
+    
+    private final TimeUnit timer;   
+    private GpioPinDigitalOutput motorPin1;
+    private GpioPinDigitalOutput motorPin2;
+    private GpioPinDigitalOutput motorEnable;
+    
+    
+    public Ex08_Motor(GpioController gpio, TimeUnit timer) {
         super(gpio);
+        this.timer = timer;
     }
         
     public static void main(String[] args) throws InterruptedException {
-        Ex07_Beep ex07_beep = new Ex07_Beep( GpioFactory.getInstance());
-        ex07_beep.run(args);
+        Ex08_Motor ex08_motor = new Ex08_Motor(GpioFactory.getInstance(), TimeUnit.SECONDS);
+        ex08_motor.run(args);
     }
 
     @Override
     protected void setup() {
-        beepPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00);
+        motorPin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00);
+        motorPin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01);
+        motorEnable = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02);
     }
     
     @Override
     protected void loop(String[] args) throws InterruptedException {        
         do{
-            beepPin.low();
-            delay(100);
-            beepPin.high();
-            delay(100);    
+            motorEnable.high();
+            motorPin1.high();
+            motorPin2.low();
+            timer.sleep(DURATION_TURNING_CLOCKWISE);
+            motorEnable.low();
+            timer.sleep(DURATION_STOPED);
+            motorEnable.high();
+            motorPin1.low();
+            motorPin2.high();
+            timer.sleep(DURATION_TURNING_ANITCLOCKWISE);
         }while(isNotInterrupted);
     }
         

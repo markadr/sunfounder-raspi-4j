@@ -47,8 +47,8 @@ public class Ex06_Rgb extends BaseSketch {
     }
         
     public static void main(String[] args) throws InterruptedException {
-        Ex06_Rgb ex05Pwmled = new Ex06_Rgb( GpioFactory.getInstance());
-        ex05Pwmled.run(args);
+        Ex06_Rgb ex06_Rgb = new Ex06_Rgb( GpioFactory.getInstance());
+        ex06_Rgb.run(args);
     }
 
     @Override
