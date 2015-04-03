@@ -25,12 +25,14 @@ import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.wiringpi.Gpio;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Super class with sketch abstraction methods.
@@ -43,6 +45,7 @@ public abstract class BaseSketch {
     protected final GpioController gpio;
     protected static Thread threadCheckInputStream;
     protected boolean isNotInterrupted = true;
+    protected static final CountDownLatch countDownLatchEndSketch = new CountDownLatch(1);
 
     protected abstract void setup();
     protected abstract void loop(String[] args) throws InterruptedException;   
@@ -97,6 +100,7 @@ public abstract class BaseSketch {
             logger.debug("Sketch interrupted.");
             scanner.close();
             isNotInterrupted = false;
+            countDownLatchEndSketch.countDown();
         }
     }
     

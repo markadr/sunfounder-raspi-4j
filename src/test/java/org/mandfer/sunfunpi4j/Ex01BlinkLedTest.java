@@ -24,12 +24,18 @@ package org.mandfer.sunfunpi4j;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mandfer.categories.FastTest;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
+/**
+ *
+ * @author marc
+ */
+@Category(FastTest.class)
 public class Ex01BlinkLedTest extends BaseSketchTest{
     
     @Test
@@ -40,7 +46,7 @@ public class Ex01BlinkLedTest extends BaseSketchTest{
           .thenReturn(mocked_led);                
         mockLedBehaviour(0, mocked_led);
         
-        Ex01BlinkLed sketch = new Ex01BlinkLed(mocked_gpioController);
+        Ex01_BlinkLed sketch = new Ex01_BlinkLed(mocked_gpioController);
         sketch.setup();
         sketch.setSketchInterruption();
         sketch.loop();

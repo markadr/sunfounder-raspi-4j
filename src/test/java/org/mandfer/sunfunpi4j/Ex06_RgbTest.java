@@ -30,8 +30,12 @@ import com.pi4j.wiringpi.SoftPwm;
 import java.awt.Color;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import static org.mandfer.sunfunpi4j.Ex06_Rgb.*;
+import org.mandfer.categories.SlowTest;
+import static org.mandfer.sunfunpi4j.Ex06_Rgb.LEDPINBLUE;
+import static org.mandfer.sunfunpi4j.Ex06_Rgb.LEDPINGREEN;
+import static org.mandfer.sunfunpi4j.Ex06_Rgb.LEDPINRED;
 import static org.mockito.Matchers.anyInt;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -97,6 +101,7 @@ public class Ex06_RgbTest extends BaseSketchTest {
     }
     
     @Test
+    @Category(SlowTest.class)
     public void testInitValuesOfRgbColorToASoftPwmPin() throws InterruptedException{
         sketch.setup();
         sketch.setSketchInterruption();
@@ -116,6 +121,7 @@ public class Ex06_RgbTest extends BaseSketchTest {
     }
     
     @Test
+    @Category(SlowTest.class)
     public void testLedColorSetWithColorType() throws InterruptedException{
         sketch.ledColorSet(Color.RED);
         
@@ -128,6 +134,7 @@ public class Ex06_RgbTest extends BaseSketchTest {
     }
     
     @Test
+    @Category(SlowTest.class)
     public void testLedColorSetWithDirectRGBValues() throws InterruptedException{
         sketch.ledColorSet(0x94, 0x00, 0xd3);
         

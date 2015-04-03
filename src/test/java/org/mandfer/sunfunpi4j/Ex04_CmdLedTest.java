@@ -29,8 +29,9 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import java.util.List;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mandfer.categories.SlowTest;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 
@@ -50,7 +51,7 @@ public class Ex04_CmdLedTest extends BaseSketchTest {
     }
     
     @Test
-    @Ignore
+    @Category(SlowTest.class)
     public void testPinAtGivenNumberIsAtGivenState() throws InterruptedException{
         String[] sample_arguments = {"2","0"};
         

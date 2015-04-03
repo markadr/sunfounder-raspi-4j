@@ -29,6 +29,8 @@ import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mandfer.categories.SlowTest;
 import org.mockito.Matchers;
 import static org.mockito.Matchers.any;
 import org.mockito.Mockito;
@@ -67,6 +69,7 @@ public class Ex05_PwmLedTest extends BaseSketchTest {
     }
     
     @Test
+    @Category(SlowTest.class)
     public void testDimLedInAndout() throws InterruptedException{
         sketch.setup();
         sketch.setSketchInterruption();

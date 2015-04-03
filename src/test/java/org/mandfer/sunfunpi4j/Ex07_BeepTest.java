@@ -29,6 +29,8 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mandfer.categories.FastTest;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -70,6 +72,7 @@ public class Ex07_BeepTest extends BaseSketchTest {
     }
     
     @Test
+    @Category(FastTest.class)
     public void testTurnOnAndOffTheBuzzer() throws InterruptedException{
         sketch.setup();
         sketch.setSketchInterruption();

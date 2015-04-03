@@ -28,18 +28,18 @@ import com.pi4j.io.gpio.*;
  * 
  * @author marcandreuf
  */
-public class Ex02BtnAndLed extends BaseSketch {
+public class Ex02_BtnAndLed extends BaseSketch {
 
     private GpioPinDigitalOutput led;
     private GpioPinDigitalInput button;
 
 
-    public Ex02BtnAndLed(GpioController gpio){
+    public Ex02_BtnAndLed(GpioController gpio){
         super(gpio);
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Ex02BtnAndLed ex2BtnLed = new Ex02BtnAndLed( GpioFactory.getInstance());
+        Ex02_BtnAndLed ex2BtnLed = new Ex02_BtnAndLed( GpioFactory.getInstance());
         ex2BtnLed.run(args);
     }
 

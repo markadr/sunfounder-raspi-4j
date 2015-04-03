@@ -31,7 +31,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
+import org.mandfer.categories.FastTest;
+import org.mandfer.categories.SlowTest;
 import static org.mandfer.sunfunpi4j.Ex03_8Led.NUMOFLEDS;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -54,6 +57,7 @@ public class Ex03_8LedTest extends BaseSketchTest {
 
     
     @Test
+    @Category(FastTest.class)
     public void createListOfNPinOutputMode() throws Exception{
        
        sketch.createListOfPinOutputs(NUMOFLEDS);
@@ -72,18 +76,21 @@ public class Ex03_8LedTest extends BaseSketchTest {
     public ExpectedException expectedException = ExpectedException.none();
     
     @Test
+    @Category(FastTest.class)
     public void failIfNumOfPinsIsNotGraterThan1() throws Exception{        
         expectedException.expect(NumberFormatException.class);        
         sketch.createListOfPinOutputs(0);        
     }
     
     @Test
+    @Category(FastTest.class)
     public void failIfNumOfPinsIsNegative() throws Exception{        
         expectedException.expect(NumberFormatException.class);        
         sketch.createListOfPinOutputs(-1);        
     }
     
     @Test
+    @Category(FastTest.class)
     public void failIfNumOfPinsIsGraterThan20() throws Exception{        
         expectedException.expect(NumberFormatException.class);        
         sketch.createListOfPinOutputs(21);        
@@ -91,6 +98,7 @@ public class Ex03_8LedTest extends BaseSketchTest {
     
     
     @Test
+    @Category(SlowTest.class)
     public void testLedsOnFromLeftToRight_And_OffFromRightToLeft() throws InterruptedException{
         sketch.setup();
         sketch.setSketchInterruption();

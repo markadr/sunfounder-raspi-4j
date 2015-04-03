@@ -136,8 +136,39 @@
 
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>SlowTests</id>
+            <properties>
+                <testcase.groups>org.mandfer.categories.SlowTest</testcase.groups>
+            </properties>
+        </profile>
+        <profile>
+            <id>FastTests</id>
+            <properties>
+                <testcase.groups>org.mandfer.categories.FastTest</testcase.groups>
+            </properties>
+        </profile>
+        <profile>
+            <id>AllTests</id>
+            <properties>
+                <testcase.groups>org.mandfer.categories.FastTest, org.mandfer.categories.SlowTest</testcase.groups>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
+            
+            <!-- Surefire tests -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18</version>
+                <configuration>
+                    <groups>${testcase.groups}</groups>
+                </configuration>
+            </plugin>
+            
             <!-- Add all libraries to the JAR file. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

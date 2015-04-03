@@ -30,7 +30,12 @@ import com.pi4j.io.gpio.RaspiPin;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mandfer.sunfunpi4j.Ex08_Motor.*;
+import org.junit.experimental.categories.Category;
+import org.mandfer.categories.FastTest;
+import org.mandfer.categories.SlowTest;
+import static org.mandfer.sunfunpi4j.Ex08_Motor.DURATION_STOPED;
+import static org.mandfer.sunfunpi4j.Ex08_Motor.DURATION_TURNING_ANITCLOCKWISE;
+import static org.mandfer.sunfunpi4j.Ex08_Motor.DURATION_TURNING_CLOCKWISE;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
@@ -60,6 +65,7 @@ public class Ex08_MotorTest extends BaseSketchTest {
     }
     
     @Test
+    @Category(FastTest.class)
     public void testSetupMotorPins() throws InterruptedException{
         sketch.setup();
         
@@ -70,6 +76,7 @@ public class Ex08_MotorTest extends BaseSketchTest {
     }
     
     @Test
+    @Category(SlowTest.class)
     public void testTurnMotorClockwiseStop3SecondsTurnMotorAnticlockwise() throws InterruptedException{
         
         when(mocked_gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00)).thenReturn(mocked_motorPin1);

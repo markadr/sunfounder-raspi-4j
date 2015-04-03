@@ -27,6 +27,8 @@ import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.RaspiPin;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mandfer.categories.FastTest;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -36,14 +38,14 @@ import static org.mockito.Mockito.when;
 public class Ex02BtnAndLedTest extends BaseSketchTest {
     private GpioPinDigitalOutput mocked_led;
     private GpioPinDigitalInput mocked_button;
-    private Ex02BtnAndLed sketch;
+    private Ex02_BtnAndLed sketch;
 
     @Before
     public void setUp(){
         mocked_led = mock(GpioPinDigitalOutput.class);
         mocked_button = mock(GpioPinDigitalInput.class);
 
-        sketch = new Ex02BtnAndLed(mocked_gpioController);
+        sketch = new Ex02_BtnAndLed(mocked_gpioController);
         
         when(mocked_gpioController.provisionDigitalOutputPin(RaspiPin.GPIO_00))
                 .thenReturn(mocked_led);
@@ -53,6 +55,7 @@ public class Ex02BtnAndLedTest extends BaseSketchTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void testLedKeepsHighIfButtonIsNotPressed() throws InterruptedException{
         when(mocked_button.isLow()).thenReturn(false);
         
@@ -65,6 +68,7 @@ public class Ex02BtnAndLedTest extends BaseSketchTest {
     }
 
     @Test
+    @Category(FastTest.class)
     public void testLedGetsLowIfButtonIsPressed() throws InterruptedException{
         when(mocked_button.isLow()).thenReturn(true);
 

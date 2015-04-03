@@ -32,16 +32,16 @@ import com.pi4j.io.gpio.RaspiPin;
  *
  * @author marcandreuf
  */
-public class Ex01BlinkLed extends BaseSketch {    
+public class Ex01_BlinkLed extends BaseSketch {    
 
     private GpioPinDigitalOutput led;
     
-    public Ex01BlinkLed(GpioController gpio){
+    public Ex01_BlinkLed(GpioController gpio){
         super(gpio);
     }
     
     public static void main(String[] args) throws InterruptedException {
-        Ex01BlinkLed _01led = new Ex01BlinkLed( GpioFactory.getInstance());
+        Ex01_BlinkLed _01led = new Ex01_BlinkLed( GpioFactory.getInstance());
         _01led.run(args);
     }    
     

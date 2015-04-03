@@ -28,65 +28,56 @@ package org.mandfer.sunfunpi4j;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.PinPullResistance;
-import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 import static org.mandfer.sunfunpi4j.BaseSketch.logger;
-
+import org.markadr.RotaryEncoder;
+import org.markadr.RotaryEncoderListener;
 
 /**
- * This class is a direct translation from the original C code of the lesson 9.
- *
- * This solution uses polling which is not very efficient. 
+ * This is an example about how to use event listener instead of using polling solution.
+ * 
+ * This example uses the RotaryEncoder from Mark R. https://gist.github.com/markadr
+ * 
+ * With the rotary encoder from Keyes this solution does not work well due to the issue about 
+ * missing state changes. With a better encoder and clear way of reading state changes this 
+ * code should work well. 
  *
  * @author marcandreuf
  */
-public class Ex09_RotaryEncoder extends BaseSketch {   
+public class Ex09_RotaryEncoder_RoEncListener extends BaseSketch {   
 
     private static GpioPinDigitalInput roAPin;
     private static GpioPinDigitalInput roBPin;
     
-    public Ex09_RotaryEncoder(GpioController gpio) {
+    public Ex09_RotaryEncoder_RoEncListener(GpioController gpio) {
         super(gpio);
     }
         
     public static void main(String[] args) throws InterruptedException {
-        Ex09_RotaryEncoder ex09_rotaryEncoder = new Ex09_RotaryEncoder(GpioFactory.getInstance());
+        Ex09_RotaryEncoder_RoEncListener ex09_rotaryEncoder = new Ex09_RotaryEncoder_RoEncListener(GpioFactory.getInstance());
         ex09_rotaryEncoder.run(args);
     }
 
     @Override
     protected void setup() {
-        roAPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_UP);
-        roBPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, PinPullResistance.PULL_UP);
-        logger.debug("Rotary encoder ready ");
+        RotaryEncoder rotaryEncoder = new RotaryEncoder(RaspiPin.GPIO_00, RaspiPin.GPIO_01, 0);
+        
+        rotaryEncoder.setListener(new RotaryEncoderListener() {
+            @Override
+            public void up(long encoderValue) {
+                logger.debug("Up value : "+encoderValue);
+            }
+            @Override
+            public void down(long encoderValue) {
+                logger.debug("Down value : "+encoderValue);
+            }
+        });
+        
+        logger.debug("Rotary encoder ready.");
     }
     
     @Override
     protected void loop(String[] args) throws InterruptedException {        
-        int globalCounter = 0;
-        boolean flag = false;
-        PinState lastRoBStatus;
-        PinState currentRoBStatus=PinState.LOW;
-        do{
-            lastRoBStatus = roBPin.getState();
-            
-            while(roAPin.isLow()){
-                currentRoBStatus = roBPin.getState();
-                flag=true;
-            }
-            
-            if(flag){
-                flag=false;
-                if(lastRoBStatus==PinState.LOW && currentRoBStatus==PinState.HIGH){
-                    globalCounter ++;
-                }
-                if(lastRoBStatus==PinState.HIGH && currentRoBStatus==PinState.LOW){
-                    globalCounter --;
-                }
-            }
-            
-            logger.debug("globalCounter : "+globalCounter);
-        }while(isNotInterrupted);
+        countDownLatchEndSketch.await();
     }
 }
