@@ -38,9 +38,8 @@ import org.markadr.RotaryEncoderListener;
  * 
  * This example uses the RotaryEncoder from Mark R. https://gist.github.com/markadr
  * 
- * With the rotary encoder from Keyes this solution does not work well due to the issue about 
- * missing state changes. With a better encoder and clear way of reading state changes this 
- * code should work well. 
+ * With the rotary encoder from Keyes does not work very well. I assume the rotary encoder
+ * used by Mark has different specifications.
  *
  * @author marcandreuf
  */
@@ -65,11 +64,11 @@ public class Ex09_RotaryEncoder_RoEncListener extends BaseSketch {
         rotaryEncoder.setListener(new RotaryEncoderListener() {
             @Override
             public void up(long encoderValue) {
-                logger.debug("Up value : "+encoderValue);
+                logger.debug("Up : "+encoderValue);
             }
             @Override
             public void down(long encoderValue) {
-                logger.debug("Down value : "+encoderValue);
+                logger.debug("Down: "+encoderValue);
             }
         });
         

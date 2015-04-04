@@ -36,24 +36,19 @@ import static org.mandfer.sunfunpi4j.BaseSketch.logger;
 
 
 /**
- * This class reads the events coming from the rotary encoder. 
- * 
- * Looks like the state changes of the encoder are too fast for the interrupt listener to read all the 
- * sequence of changes. Some of the events are missed and there is no way to read proper values of
- * pin A and B with the encoder device from Keyes. With a better encoder and extra capacitors to 
- * control de denounce issue, should work fine with this code to read the state changes as expected
- * for a quadrature wave. 
+ * This class reads the events coming from the rotary encoder by using 
+ * GpioInterrupt Listener.
  *
  * @author marcandreuf
  */
-public class Ex09_RotaryEncoder_Iterrupt extends BaseSketch {   
+public class Ex09_RotaryEncoder_Interrupt extends BaseSketch {   
     
-    public Ex09_RotaryEncoder_Iterrupt(GpioController gpio) {
+    public Ex09_RotaryEncoder_Interrupt(GpioController gpio) {
         super(gpio);
     }
         
     public static void main(String[] args) throws InterruptedException {
-        Ex09_RotaryEncoder_Iterrupt ex09_rotaryEncoder = new Ex09_RotaryEncoder_Iterrupt(GpioFactory.getInstance());
+        Ex09_RotaryEncoder_Interrupt ex09_rotaryEncoder = new Ex09_RotaryEncoder_Interrupt(GpioFactory.getInstance());
         ex09_rotaryEncoder.run(args);
     }
 
@@ -68,16 +63,20 @@ public class Ex09_RotaryEncoder_Iterrupt extends BaseSketch {
         GpioInterrupt.addListener(new GpioInterruptListener() {
             @Override
             public void pinStateChange(GpioInterruptEvent event) {
-                logger.debug("Raspberry Pi PIN [" + event.getPin() +
-                  "] is in STATE [" + event.getState() + "]");
+                logger.debug("PIN " + event.getPin() +" is in STATE " + event.getState());
             }
         });
         
         GpioUtil.export(0, GpioUtil.DIRECTION_IN);
-        GpioUtil.setEdgeDetection(0, GpioUtil.DIRECTION_HIGH);
+        GpioUtil.export(1, GpioUtil.DIRECTION_IN);
+        GpioUtil.setEdgeDetection(0, GpioUtil.EDGE_FALLING);
+        GpioUtil.setEdgeDetection(1, GpioUtil.EDGE_FALLING);
         Gpio.pinMode(0, Gpio.INPUT);
-        Gpio.pullUpDnControl(0, Gpio.PUD_UP);        
+        Gpio.pinMode(1, Gpio.INPUT);
+        Gpio.pullUpDnControl(0, Gpio.PUD_UP);
+        Gpio.pullUpDnControl(1, Gpio.PUD_UP);
         GpioInterrupt.enablePinStateChangeCallback(0);
+        GpioInterrupt.enablePinStateChangeCallback(1);
         
         logger.debug("Rotary encoder ready.");
     }   

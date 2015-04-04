@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mandfer.categories.SlowTest;
 import static org.mandfer.sunfunpi4j.Ex08_Motor.*;
-import org.mandfer.sunfunpi4j.Ex09_RotaryEncoderListener.RotaryListener;
+import org.mandfer.sunfunpi4j.Ex09_RotaryEncoder_SMPC.RotaryProducerListener;
 import org.mockito.InOrder;
 import static org.mockito.Matchers.any;
 import org.mockito.Mockito;
@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
 @Category(SlowTest.class)
 public class Ex09_RotaryEncoderTest extends BaseSketchTest {
 
-    private Ex09_RotaryEncoderListener sketch;
+    private Ex09_RotaryEncoder_SMPC sketch;
     private GpioPinDigitalInput mocked_roAPin;
     private GpioPinDigitalInput mocked_roBPin;
 
@@ -63,7 +63,7 @@ public class Ex09_RotaryEncoderTest extends BaseSketchTest {
     public void setUp() {
         mocked_roAPin = mock(GpioPinDigitalInput.class);
         mocked_roBPin = mock(GpioPinDigitalInput.class);
-        sketch = new Ex09_RotaryEncoderListener(mocked_gpioController);
+        sketch = new Ex09_RotaryEncoder_SMPC(mocked_gpioController);
     }
 
     @Test
@@ -113,5 +113,22 @@ public class Ex09_RotaryEncoderTest extends BaseSketchTest {
         System.out.println("1,0: " + sketch.calcEncoded(1, 0));
         System.out.println("1,1: " + sketch.calcEncoded(1, 1));
         System.out.println("0,1: " + sketch.calcEncoded(0, 1));
+    }
+    
+    
+    @Test
+    public void testPinStateValues() {
+        System.out.println("0,1: " + sketch.calcPinState(0, 1));
+        System.out.println("0,0: " + sketch.calcPinState(0, 0));
+        System.out.println("1,0: " + sketch.calcPinState(1, 0));
+        System.out.println("1,1: " + sketch.calcPinState(1, 1));
+    }
+    
+    @Test
+    public void testPinStateRevValues() {
+        System.out.println("0,1: " + sketch.calcPinStateRev(0, 1));
+        System.out.println("0,0: " + sketch.calcPinStateRev(0, 0));
+        System.out.println("1,0: " + sketch.calcPinStateRev(1, 0));
+        System.out.println("1,1: " + sketch.calcPinStateRev(1, 1));
     }
 }
