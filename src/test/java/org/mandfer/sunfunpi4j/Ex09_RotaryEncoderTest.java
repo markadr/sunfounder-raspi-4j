@@ -21,26 +21,13 @@
 package org.mandfer.sunfunpi4j;
 
 import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.RaspiPin;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mandfer.categories.SlowTest;
-import static org.mandfer.sunfunpi4j.Ex08_Motor.*;
-import org.mandfer.sunfunpi4j.Ex09_RotaryEncoder_SMPC.RotaryProducerListener;
-import org.mockito.InOrder;
-import static org.mockito.Matchers.any;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 
 /**
  *
@@ -69,66 +56,67 @@ public class Ex09_RotaryEncoderTest extends BaseSketchTest {
     @Test
     @Ignore
     public void learningTestCalcDelta() {
-        assertTrue(sketch.calcDelta(3, 0) == -3); //0
-        assertTrue(sketch.calcDelta(0, 5) == 1); //6
-        assertTrue(sketch.calcDelta(5, 6) == 1); //12
-        assertTrue(sketch.calcDelta(6, 3) == -3); //6
-        assertTrue(sketch.calcDelta(0, 6) == 2); //8
-        assertTrue(sketch.calcDelta(5, 3) == -2); //6
-        assertTrue(sketch.calcDelta(6, 0) == -2); //4
-        assertTrue(sketch.calcDelta(3, 5) == 2); //10
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(3, 0) == -3); //0
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(0, 5) == 1); //6
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(5, 6) == 1); //12
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(6, 3) == -3); //6
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(0, 6) == 2); //8
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(5, 3) == -2); //6
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(6, 0) == -2); //4
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(3, 5) == 2); //10
 
-        assertTrue(sketch.calcDelta(3, 6) == 3); //12
-        assertTrue(sketch.calcDelta(6, 5) == -1); //10
-        assertTrue(sketch.calcDelta(5, 0) == -1);
-        assertTrue(sketch.calcDelta(0, 3) == 3);
-        assertTrue(sketch.calcDelta(6, 0) == -2);
-        assertTrue(sketch.calcDelta(3, 5) == 2);
-        assertTrue(sketch.calcDelta(0, 6) == 2);
-        assertTrue(sketch.calcDelta(5, 3) == -2);
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(3, 6) == 3); //12
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(6, 5) == -1); //10
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(5, 0) == -1);
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(0, 3) == 3);
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(6, 0) == -2);
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(3, 5) == 2);
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(0, 6) == 2);
+        assertTrue(Ex09_RotaryEncoder_SMPC.calcDelta(5, 3) == -2);
     }
 
     @Test
     @Ignore
     public void rotaryEncoderStateTest() {
-        assertTrue(sketch.rotaryEncoderState(0, 0) == 0);
-        assertTrue(sketch.rotaryEncoderState(1, 0) == 5);
-        assertTrue(sketch.rotaryEncoderState(1, 1) == 6);
-        assertTrue(sketch.rotaryEncoderState(0, 1) == 3);
+        assertTrue(Ex09_RotaryEncoder_SMPC.rotaryEncoderState(0, 0) == 0);
+        assertTrue(Ex09_RotaryEncoder_SMPC.rotaryEncoderState(1, 0) == 5);
+        assertTrue(Ex09_RotaryEncoder_SMPC.rotaryEncoderState(1, 1) == 6);
+        assertTrue(Ex09_RotaryEncoder_SMPC.rotaryEncoderState(0, 1) == 3);
     }
 
     @Test
     @Ignore
     public void rotarySeqTest() {
-        System.out.println("0,0: " + sketch.calcSeq(0, 0));
-        System.out.println("1,0: " + sketch.calcSeq(1, 0));
-        System.out.println("1,1: " + sketch.calcSeq(1, 1));
-        System.out.println("0,1: " + sketch.calcSeq(0, 1));
+        System.out.println("0,0: " + Ex09_RotaryEncoder_SMPC.calcSeq(0, 0));
+        System.out.println("1,0: " + Ex09_RotaryEncoder_SMPC.calcSeq(1, 0));
+        System.out.println("1,1: " + Ex09_RotaryEncoder_SMPC.calcSeq(1, 1));
+        System.out.println("0,1: " + Ex09_RotaryEncoder_SMPC.calcSeq(0, 1));
     }
 
     @Test
     @Ignore
     public void testEncodedValues() {
-        System.out.println("0,0: " + sketch.calcEncoded(0, 0));
-        System.out.println("1,0: " + sketch.calcEncoded(1, 0));
-        System.out.println("1,1: " + sketch.calcEncoded(1, 1));
-        System.out.println("0,1: " + sketch.calcEncoded(0, 1));
-    }
-    
+        System.out.println("0,0: " + Ex09_RotaryEncoder_SMPC.calcEncoded(0, 0));
+        System.out.println("1,0: " + Ex09_RotaryEncoder_SMPC.calcEncoded(1, 0));
+        System.out.println("1,1: " + Ex09_RotaryEncoder_SMPC.calcEncoded(1, 1));
+        System.out.println("0,1: " + Ex09_RotaryEncoder_SMPC.calcEncoded(0, 1));
+    }    
     
     @Test
+    @Ignore
     public void testPinStateValues() {
-        System.out.println("0,1: " + sketch.calcPinState(0, 1));
-        System.out.println("0,0: " + sketch.calcPinState(0, 0));
-        System.out.println("1,0: " + sketch.calcPinState(1, 0));
-        System.out.println("1,1: " + sketch.calcPinState(1, 1));
+        System.out.println("0,1: " + Ex09_RotaryEncoder_SMPC.calcPinState(0, 1));
+        System.out.println("0,0: " + Ex09_RotaryEncoder_SMPC.calcPinState(0, 0));
+        System.out.println("1,0: " + Ex09_RotaryEncoder_SMPC.calcPinState(1, 0));
+        System.out.println("1,1: " + Ex09_RotaryEncoder_SMPC.calcPinState(1, 1));
     }
     
     @Test
+    @Ignore
     public void testPinStateRevValues() {
-        System.out.println("0,1: " + sketch.calcPinStateRev(0, 1));
-        System.out.println("0,0: " + sketch.calcPinStateRev(0, 0));
-        System.out.println("1,0: " + sketch.calcPinStateRev(1, 0));
-        System.out.println("1,1: " + sketch.calcPinStateRev(1, 1));
+        System.out.println("0,1: " + Ex09_RotaryEncoder_SMPC.calcPinStateRev(0, 1));
+        System.out.println("0,0: " + Ex09_RotaryEncoder_SMPC.calcPinStateRev(0, 0));
+        System.out.println("1,0: " + Ex09_RotaryEncoder_SMPC.calcPinStateRev(1, 0));
+        System.out.println("1,1: " + Ex09_RotaryEncoder_SMPC.calcPinStateRev(1, 1));
     }
 }

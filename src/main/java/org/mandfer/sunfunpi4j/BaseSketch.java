@@ -54,6 +54,10 @@ public abstract class BaseSketch {
         loop(new String[0]);
     }
 
+    public BaseSketch() {
+        this(null);
+    }
+    
     public BaseSketch(GpioController gpio) {
         this.gpio = gpio;
     }
@@ -73,7 +77,9 @@ public abstract class BaseSketch {
 
     protected void tearDown() {
         logger.debug("Shutting down gpio.");
-        gpio.shutdown();
+        if(gpio != null){
+            gpio.shutdown();
+        }
     }
 
     protected void delay(long miliseconds) {
@@ -95,6 +101,8 @@ public abstract class BaseSketch {
 
         Scanner scanner = new Scanner(System.in);
 
+        @Override
+        @SuppressWarnings("empty-statement")
         public void run() {
             while (!scanner.hasNextLine()) {};
             logger.debug("Sketch interrupted.");
@@ -104,7 +112,7 @@ public abstract class BaseSketch {
         }
     }
     
-    public List<GpioPinDigitalOutput> createListOfPinOutputs(int numOfPins) throws Exception {
+    protected List<GpioPinDigitalOutput> createListOfPinOutputs(int numOfPins) throws Exception {
         Pin pin;
         List<GpioPinDigitalOutput> list = new ArrayList<>();
         if(numOfPins<1) throw new NumberFormatException("The num of leds can not be negative.");
@@ -115,6 +123,14 @@ public abstract class BaseSketch {
             logger.debug("linker LedPin : GPIO "+pin.getAddress()+"(wiringPi pin)");            
         }
         return list;
+    }    
+    
+    protected static void wiringPiSetup(){
+        if (Gpio.wiringPiSetup() == -1) {
+            String msg = "==>> GPIO SETUP FAILED";
+            logger.debug(msg);
+            throw new RuntimeException(msg);
+        }
     }
 
 }
