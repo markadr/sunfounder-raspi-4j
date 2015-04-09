@@ -74,10 +74,32 @@ public class Ex09_RotaryEncoder_SMPC extends BaseSketch {
         // R_CCW_NEXT
         {R_CCW_NEXT, R_CCW_FINAL, R_CCW_BEGIN, R_START},};
 
-    private static GpioPinDigitalInput roAPin;
-    private static GpioPinDigitalInput roBPin;
+	private static final int R_CCW_BEGIN_HALF = 0x1;
+	private static final int R_CW_BEGIN_HALF = 0x2;
+	private static final int R_START_M = 0x3;
+	private static final int R_CW_BEGIN_M = 0x4;
+	private static final int R_CCW_BEGIN_M = 0x5;
+
+	// Use the half-step state table (emits a code at 00 and 11)
+	private static final int statesTableHalfStep[][] = {
+			// R_START (00)
+			{ R_START_M, R_CW_BEGIN_HALF, R_CCW_BEGIN_HALF, R_START },
+			// R_CCW_BEGIN
+			{ R_START_M | DIR_CCW, R_START, R_CCW_BEGIN_HALF, R_START },
+			// R_CW_BEGIN
+			{ R_START_M | DIR_CW, R_CW_BEGIN_HALF, R_START, R_START },
+			// R_START_M (11)
+			{ R_START_M, R_CCW_BEGIN_M, R_CW_BEGIN_M, R_START },
+			// R_CW_BEGIN_M
+			{ R_START_M, R_START_M, R_CW_BEGIN_M, R_START | DIR_CW },
+			// R_CCW_BEGIN_M
+			{ R_START_M, R_CCW_BEGIN_M, R_START_M, R_START | DIR_CCW }, };
+
+    private GpioPinDigitalInput roAPin;
+    private GpioPinDigitalInput roBPin;
 
     private volatile int state, counter;
+	private boolean halfStep = false;
     private BlockingQueue<EventStateChange> eventsQueue;
     private Thread eventsConsumer;
 
@@ -95,7 +117,7 @@ public class Ex09_RotaryEncoder_SMPC extends BaseSketch {
         roAPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_00, PinPullResistance.PULL_UP);
         roBPin = gpio.provisionDigitalInputPin(RaspiPin.GPIO_01, PinPullResistance.PULL_UP);
 
-        eventsQueue = new ArrayBlockingQueue(1024);
+        eventsQueue = new ArrayBlockingQueue<EventStateChange>(1024);
         eventsConsumer = new Thread(new EventsConsumer(eventsQueue));
         eventsConsumer.start();
 
@@ -124,7 +146,6 @@ public class Ex09_RotaryEncoder_SMPC extends BaseSketch {
     private class EventStateChange {
         private final int evPinA;
         private final int evPinB;
-        private int pinState, result;
 
         public EventStateChange(int a, int b) {
             this.evPinA = a;
@@ -132,9 +153,12 @@ public class Ex09_RotaryEncoder_SMPC extends BaseSketch {
         }
 
         public void process() {
-            pinState = (evPinB << 1) | evPinA;
-            state = statesTable[state & STATE_FILTER][pinState];
-            result = state & DIR_FILTER;
+            int pinState = (evPinB << 1) | evPinA;
+    		int filteredState = state & STATE_FILTER;
+    		
+    		state = halfStep ? statesTableHalfStep[filteredState][pinState] : statesTable[filteredState][pinState];
+
+            int result = state & DIR_FILTER;
             // Switched directions because the rotary switch from keyes is pulled up and 
             // provides oposite values.
             if (result == DIR_CW) {
